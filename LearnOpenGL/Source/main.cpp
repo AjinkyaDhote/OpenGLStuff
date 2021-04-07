@@ -18,11 +18,11 @@ const char* vertexShaderSource = "#version 330 core\n"
 
 //FragmentShader
 const char* fragmentShaderSource = "#version 330 core\n"
-"in vec4 vertexColor;\n"
+"uniform vec4 ourColor;\n"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"FragColor = vertexColor;\n"
+"FragColor = ourColor;\n"
 "}\0";
 
 
@@ -168,7 +168,7 @@ int main()
     
 
     //Buffer type of a vertex buffer object is GL_ARRAY_BUFFER
-    unsigned int VBOs[2], VAOs[1], EBO;
+    unsigned int VBOs[2], VAOs[2], EBO;
     glGenVertexArrays( 2, VAOs );
     glGenBuffers( 2, VBOs );
     glGenBuffers( 1, &EBO );
@@ -229,11 +229,18 @@ int main()
         processInput(window);
 
         //rendering commands...
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //draw our first triangle
+        //Activate the shader
         glUseProgram( shaderProgram );
+
+        //draw our first triangle
+        float timeValue = glfwGetTime();
+        float greenValue = ( sin( timeValue ) / 2.0f ) + 0.5f;
+        int vertexColorLocation = glGetUniformLocation( shaderProgram, "ourColor" );
+        glUniform4f( vertexColorLocation, 0.0f, greenValue, 0.0f, 0.0f );
+
         glBindVertexArray( VAOs[0] ); //seeing as we only have a single VAO there's no need to bind it every time(reason for binding it the second time, but we'll do so to keep things a bit more organized
         glDrawArrays( GL_TRIANGLES, 0, 3 );
         glUseProgram( shaderProgram2 );
@@ -253,9 +260,10 @@ int main()
     }
 
     //deallocate all resources once they've outlived their purpose.
-    glDeleteVertexArrays( 1, VAOs );
-    glDeleteBuffers( 1, VBOs );
+    glDeleteVertexArrays( 2, VAOs );
+    glDeleteBuffers( 2, VBOs );
     glDeleteProgram( shaderProgram );
+    glDeleteProgram( shaderProgram2 );
 
     glfwTerminate();
     return 0;
