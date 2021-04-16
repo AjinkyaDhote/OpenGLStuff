@@ -3,6 +3,7 @@
 #include<iostream>
 
 #include "Shader.h"
+#include "stb_image.h"
 
 
 //Window resize callback function
@@ -49,96 +50,20 @@ int main()
 
     glfwSetFramebufferSizeCallback( window, framebuffer_size_callback );
 
-    
-
-    ////VertexShader
-    //unsigned int vertexShader;
-    //vertexShader = glCreateShader( GL_VERTEX_SHADER );
-
-    ////Attach shader source code to shader object and compile shader.
-    //glShaderSource( vertexShader, 1, &vertexShaderSource, NULL );
-    //glCompileShader( vertexShader );
-
-    ////check if shader compiled
-    //int success, successShader2;
-    //char infoLog[512];
-    //glGetShaderiv( vertexShader, GL_COMPILE_STATUS, &success );
-
-    //if ( !success )
-    //{
-    //    glGetShaderInfoLog( vertexShader, 512, NULL, infoLog );
-    //    std::cout << "ERROR::SHADER::VERTEX::COMPILATION FAILED\n" << infoLog << std::endl;
-    //}
-
-    ////Fragment Shader
-    //unsigned int fragmentShader[2];
-    //fragmentShader[0] = glCreateShader( GL_FRAGMENT_SHADER );
-    //fragmentShader[1] = glCreateShader( GL_FRAGMENT_SHADER );
-
-    ////Attach shader source code to shader object and compile shader.
-    //glShaderSource( fragmentShader[0], 1, &fragmentShaderSource, NULL );
-    //glCompileShader( fragmentShader[0] );
-
-    //glShaderSource( fragmentShader[1], 1, &fragmentShaderSourceYellow, NULL );
-    //glCompileShader( fragmentShader[1] );
-
-    ////check if fragment shader compiled
-    //glGetShaderiv( fragmentShader[0], GL_COMPILE_STATUS, &success );
-    //glGetShaderiv( fragmentShader[1], GL_COMPILE_STATUS, &successShader2 );
-
-    //if ( !success || !successShader2 )
-    //{
-    //    glGetShaderInfoLog( fragmentShader[0], 512, NULL, infoLog );
-    //    std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION FAILED\n" << infoLog << std::endl;
-    //}
-
-    ////Shader Program (Shader Program Object is the final linked version of multiple shaders combined)
-    //unsigned int shaderProgram, shaderProgram2;
-    //shaderProgram = glCreateProgram();
-    //shaderProgram2 = glCreateProgram();
-
-    ////Attach previously compiled shaders and link
-    //glAttachShader( shaderProgram, vertexShader );
-    //glAttachShader( shaderProgram, fragmentShader[0] );
-    //glAttachShader( shaderProgram2, fragmentShader[1] );
-    //glLinkProgram( shaderProgram );
-    //glLinkProgram( shaderProgram2 );
-
-    ////Check for errors
-    //glGetProgramiv( shaderProgram, GL_LINK_STATUS, &success );
-    //glGetProgramiv( shaderProgram, GL_LINK_STATUS, &successShader2 );
-    //if ( !success || !successShader2 )
-    //{
-    //    glGetProgramInfoLog( shaderProgram, 512, NULL, infoLog );
-    //    std::cout << "ERROR::PROGRAM::LINKING FAILED\n" << infoLog << std::endl;
-    //}
-
-    //UseProgram. //ShaderProgram must be compiled and linked.
-    //glUseProgram(shaderProgram);
-
-    //Delete shaders once linked
-    //glDeleteShader( vertexShader );
-    //glDeleteShader( fragmentShader[0] );
-    //glDeleteShader( fragmentShader[1] );
-
     Shader ourShader("Shaders/3.3.shader.vs","Shaders/3.3.shader.fs");
 
-    //Set up vertex Data (and buffer[s]) and configure vertex attribs
+    //Set up vertex Data (and buffer[s]) and configure vertex attribs. //Time to make a rectangle
     float vertices[] = {
-    0.0f, 0.5f, 0.0f, /*Common Origin 0*/ 1.0f, 0.0f, 0.0f, /*Red Color*/
-    -0.5f, 0.0f, 0.0f, /*Left Vertex  2*/ 0.0f, 1.0f, 0.0f, /*Green Color*/
-    0.5f, 0.0f, 0.0f, /*Top Left     3*/ 0.0f, 0.0f, 1.0f, /*Blue Color*/
-    };
-
-    float vertices1[] = {
-        0.0f, 0.0f, 0.0f, //Common Origin 0
-        1.0f, 0.0f, 0.0f, //Right Vertex  1
-        0.5f, 0.5f, 0.0f  //Top Right     4
+    //Vertices          //Colors           //Texture coords
+    0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  1.0f, 1.0f,      /*Top Right Vertex */
+    0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,      /*Bottom Right vertex*/
+    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f,      /*Bottom Left Vertex*/
+    -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f       /*Top Left Vertex*/
     };
 
     unsigned int indices[] = {
-        0, 1, 4, //first triangle
-        0, 2, 3 //second triangle
+        0, 1, 3, //first triangle
+        1, 2, 3 //second triangle
     };
     
 
@@ -152,12 +77,17 @@ int main()
     glBindVertexArray( VAO );
     glBindBuffer( GL_ARRAY_BUFFER, VBO );
     glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
-    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof( float ), ( void* )0 );
+    //vertices
+    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* )0 );
     glEnableVertexAttribArray( 0 );
 
-    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof( float ), ( void* )( 3 * sizeof( float ) ) );
+    //color
+    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* )( 3 * sizeof( float ) ) );
     glEnableVertexAttribArray( 1 );
 
+    //Texture coords
+    glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), (void*)(6 * sizeof( float )) );
+    glEnableVertexAttribArray( 2 );
 
     //bind the vertex array object first. then bind and set the vertex buffer[s]. and than configure vertex attribs;
     //glBindVertexArray( VAO );
@@ -193,6 +123,34 @@ int main()
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray( 0 );
 
+    //Fun Part!!! TEXTURES YAY
+    unsigned int texture;
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+
+    //Texture Wrapping
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT ); 
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+    //Texture Filtering
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); //Try using GL_NEAREST
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ); //Try using GL_NEAREST
+
+    //Load and generate the texture
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load( "Resources/Textures/container.jpg", &width, &height, &nrChannels, 0 );
+    if ( data )
+    {
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
+        glGenerateMipmap( GL_TEXTURE_2D ); //This call will automagically generate all the required mipmaps for the currently bound texture.
+    }
+    else
+    {
+        std::cout << "Failed to load the texture" << std::endl;
+    }
+    stbi_image_free( data );
+
+
     //render loop
     //----------
     while (!glfwWindowShouldClose(window))
@@ -204,10 +162,13 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //Activate the shader
+        //bind Texture
+        glBindTexture( GL_TEXTURE_2D, texture );
+
+        //Activate the program
         ourShader.use();
         glBindVertexArray( VAO );
-        glDrawArrays( GL_TRIANGLES, 0, 3 );
+        glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
 
         //draw our first triangle
         //float timeValue = glfwGetTime();
@@ -223,6 +184,7 @@ int main()
     //deallocate all resources once they've outlived their purpose.
     glDeleteVertexArrays( 1, &VAO );
     glDeleteBuffers( 1, &VBO );
+    glDeleteBuffers( 1, &EBO );
 
     glfwTerminate();
     return 0;
