@@ -12,12 +12,24 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
+float g_MixValue = 0.2f;
+
 //ProcessInput
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
+    }
+    //Fade Effect
+    if ( glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS )
+    {
+        g_MixValue = g_MixValue > 1.0f ? 1.0f : g_MixValue + 0.001f;
+    }
+
+    else if ( glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS )
+    {
+        g_MixValue = g_MixValue < 0.0f ? 0.0f : g_MixValue - 0.001f;
     }
 }
 
@@ -129,12 +141,12 @@ int main()
     glBindTexture( GL_TEXTURE_2D, texture1 );
 
     //Texture Wrapping
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT ); 
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
     //Texture Filtering
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); //Try using GL_NEAREST
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ); //Try using GL_NEAREST
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ); //Try using GL_NEAREST
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ); //Try using GL_NEAREST
 
     //Load and generate the texture
     int width, height, nrChannels;
@@ -145,7 +157,7 @@ int main()
         glGenerateMipmap( GL_TEXTURE_2D ); //This call will automagically generate all the required mipmaps for the currently bound texture.
     }
     else
-    {\
+    {
         std::cout << "Failed to load texture1" << std::endl;
     }
     stbi_image_free( data );
@@ -179,13 +191,14 @@ int main()
     ourShader.setInt( "texture1", 0 );
     ourShader.setInt( "texture2", 1 );
 
-
     //render loop
     //----------
     while (!glfwWindowShouldClose(window))
     {
         //input
         processInput(window);
+
+
 
         //rendering commands...
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -197,7 +210,9 @@ int main()
         glActiveTexture( GL_TEXTURE1 );
         glBindTexture( GL_TEXTURE_2D, texture2 );
 
+        ourShader.setFloat( "fadeValue", g_MixValue );
 
+        //Render 
         ourShader.use();
         glBindVertexArray( VAO );
         glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
