@@ -1,6 +1,9 @@
 #include<glad/glad.h>
 #include<glfw3.h>
 #include<iostream>
+#include <glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
 #include "stb_image.h"
@@ -191,6 +194,14 @@ int main()
     ourShader.setInt( "texture1", 0 );
     ourShader.setInt( "texture2", 1 );
 
+
+   // glm::mat4 trans = glm::mat4( 1.0f ); //WTF IS THIS DOING? IT SAYS IDENTITY MATRIX
+   // trans = glm::rotate( trans, glm::radians( 90.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ) );
+   // trans = glm::scale( trans, glm::vec3( 0.5f, 0.5f, 0.5f ) );
+   //
+    unsigned int transformLoc = glGetUniformLocation( ourShader.ID, "transform" );
+   
+
     //render loop
     //----------
     while (!glfwWindowShouldClose(window))
@@ -198,7 +209,12 @@ int main()
         //input
         processInput(window);
 
+        glm::mat4 trans = glm::mat4( 1.0f );
+        trans = glm::rotate( trans, (float)glfwGetTime(), glm::vec3( 0.0f, 0.0f, 1.0f ) );
+        //trans = glm::translate( trans, glm::vec3( 0.5f, -0.5f, 0.0f ) );
+        
 
+        glUniformMatrix4fv( transformLoc, 1, GL_FALSE, glm::value_ptr( trans ) );
 
         //rendering commands...
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
