@@ -1,0 +1,18 @@
+Coordinate systems
+
+
+OpenGL is a right handed system.
+
+OPenGL expects all the vertices , that we want to be visible in normalized device coordinates. 
+That is x, y and z coordinates of each vertex should be between -1.0 and 1.0. Coordinates outside this range will not be visible.
+
+What we usually do is specify the coordinates in a range(or space) we determine ourselves and in the vertex shader,
+transform these coordinates to normalized device coordinates (NDC). Than this NDC is given to the rasterizer to transform
+them to 2D coordinates/pixels on your screen.
+
+There are 5 different coordinate systems - 
+Local Space (or Object Space)
+World Space
+View Space
+Clip Space
+Screen Space

@@ -69,11 +69,48 @@ int main()
 
     //Set up vertex Data (and buffer[s]) and configure vertex attribs. //Time to make a rectangle
     float vertices[] = {
-    //Vertices          //Colors           //Texture coords
-    0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  1.0f, 1.0f,      /*Top Right Vertex */
-    0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,      /*Bottom Right vertex*/
-    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f,      /*Bottom Left Vertex*/
-    -0.5f, 0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f       /*Top Left Vertex*/
+    // positions          // texture coords
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
     unsigned int indices[] = {
@@ -82,27 +119,46 @@ int main()
     };
     
 
+    glm::vec3 cubePositions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f ),
+        glm::vec3( 2.0f,  5.0f, -15.0f ),
+        glm::vec3( -1.5f, -2.2f, -2.5f ),
+        glm::vec3( -3.8f, -2.0f, -12.3f ),
+        glm::vec3( 2.4f, -0.4f, -3.5f ),
+        glm::vec3( -1.7f,  3.0f, -7.5f ),
+        glm::vec3( 1.3f, -2.0f, -2.5f ),
+        glm::vec3( 1.5f,  2.0f, -2.5f ),
+        glm::vec3( 1.5f,  0.2f, -1.5f ),
+        glm::vec3( -1.3f,  1.0f, -1.5f )
+    };
+
+
     //Buffer type of a vertex buffer object is GL_ARRAY_BUFFER
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays( 1, &VAO );
     glGenBuffers( 1, &VBO );
     glGenBuffers( 1, &EBO );
 
-    //Setup 1st Triangle
     glBindVertexArray( VAO );
     glBindBuffer( GL_ARRAY_BUFFER, VBO );
     glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
-    //vertices
-    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* )0 );
+    
+    //Bind ElementBuffer Object
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, EBO );
+    glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
+
+
+    //position attribute
+    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof( float ), ( void* )0 );
     glEnableVertexAttribArray( 0 );
 
     //color
-    glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* )( 3 * sizeof( float ) ) );
-    glEnableVertexAttribArray( 1 );
+    //glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* )( 3 * sizeof( float ) ) );
+    //glEnableVertexAttribArray( 1 );
 
-    //Texture coords
-    glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), (void*)(6 * sizeof( float )) );
-    glEnableVertexAttribArray( 2 );
+    //Texture coord attribute
+    glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof( float ), (void*)(3 * sizeof( float )) );
+    glEnableVertexAttribArray( 1 );
 
     //bind the vertex array object first. then bind and set the vertex buffer[s]. and than configure vertex attribs;
     //glBindVertexArray( VAO );
@@ -120,9 +176,7 @@ int main()
     //glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
     //glBufferData( GL_ARRAY_BUFFER, sizeof( vertices1 ), vertices1, GL_STATIC_DRAW );
 
-    //Bind ElementBuffer Object
-    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, EBO );
-    glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof( indices ), indices, GL_STATIC_DRAW );
+
 
 
     //Till now we have instructed the GPU how to process vertex data in vertex and fragment shader.
@@ -132,11 +186,11 @@ int main()
     //glEnableVertexAttribArray( 0 );
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer( GL_ARRAY_BUFFER, 0 );
+    //glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray( 0 );
+    //glBindVertexArray( 0 );
 
     //Fun Part!!! TEXTURES YAY
     unsigned int texture1, texture2;
@@ -144,12 +198,12 @@ int main()
     glBindTexture( GL_TEXTURE_2D, texture1 );
 
     //Texture Wrapping
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
     //Texture Filtering
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ); //Try using GL_NEAREST
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ); //Try using GL_NEAREST
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); //Try using GL_NEAREST
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ); //Try using GL_NEAREST
 
     //Load and generate the texture
     int width, height, nrChannels;
@@ -168,13 +222,13 @@ int main()
     //2nd Texture
     glGenTextures( 1, &texture2 );
     glBindTexture( GL_TEXTURE_2D, texture2 );
-
+    
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
+    
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
+    
     stbi_set_flip_vertically_on_load( true );
     data = stbi_load( "Resources/Textures/awesomeface.png", &width, &height, &nrChannels, 0 );
     if ( data )
@@ -200,8 +254,11 @@ int main()
    // trans = glm::rotate( trans, glm::radians( 90.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ) );
    // trans = glm::scale( trans, glm::vec3( 0.5f, 0.5f, 0.5f ) );
    //
-    unsigned int transformLoc = glGetUniformLocation( ourShader.ID, "transform" );
+   // unsigned int transformLoc = glGetUniformLocation( ourShader.ID, "transform" );
+    //glUniformMatrix4fv( transformLoc, 1, GL_FALSE, );
    
+   //Enable Depth Testing
+    glEnable( GL_DEPTH_TEST );
 
     //render loop
     //----------
@@ -210,38 +267,84 @@ int main()
         //input
         processInput(window);
 
-        glm::mat4 trans = glm::mat4( 1.0f );
-        trans = glm::translate( trans, glm::vec3( 0.5f, -0.5f, 0.0f ) );
-        trans = glm::rotate( trans, (float)glfwGetTime(), glm::vec3( 0.0f, 0.0f, 1.0f ) );
-        
-        
-
-        glUniformMatrix4fv( transformLoc, 1, GL_FALSE, glm::value_ptr( trans ) );
 
         //rendering commands...
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        //Rotate and Translate
+        //glm::mat4 trans = glm::mat4( 1.0f );
+        //trans = glm::translate( trans, glm::vec3( 0.5f, -0.5f, 0.0f ) );
+        //trans = glm::rotate( trans, (float)glfwGetTime(), glm::vec3( 0.0f, 0.0f, 1.0f ) );
+        //glUniformMatrix4fv( transformLoc, 1, GL_FALSE, glm::value_ptr( trans ) );
 
         //bind Texture
         glActiveTexture( GL_TEXTURE0 );
         glBindTexture( GL_TEXTURE_2D, texture1 );
         glActiveTexture( GL_TEXTURE1 );
         glBindTexture( GL_TEXTURE_2D, texture2 );
+        
+        //activate shader
+        ourShader.use();
 
-        ourShader.setFloat( "fadeValue", g_MixValue );
+
+     //Going 3D------------------------------------------------------------------------------------------------------
+
+    //Creating a model matrix (By multiplying the vertex coordinates with this model matrix we are transforming the 
+    //vertex coordinates to world coordinates).
+        glm::mat4 model = glm::mat4( 1.0f );
+        model = glm::rotate( model, (float) glfwGetTime() *  glm::radians( -55.0f ), glm::vec3( 0.5f, 1.0f, 0.0f ) );
+        
+        //Creatring a view matrix (We need to move slightly backwards in the scene so the object becomes visible
+        //To move the camera backwards is the same as moving the scene forward.)
+        glm::mat4 view = glm::mat4( 1.0f );
+        view = glm::translate( view, glm::vec3( 0.0f, 0.0f, -3.0f ) );
+        
+        //Creating a projection matrix. We need to use perspective projection for our scene.
+        glm::mat4 projection;
+        projection = glm::perspective( glm::radians( 45.0f ), 800.0f / 600.0f, 0.1f, 100.0f );
+        
+        
+        //--------------------------------------------------------------------------------------------------------------
+        
+        //Going 3D
+        int modelLoc = glGetUniformLocation( ourShader.ID, "model" );
+        glUniformMatrix4fv( modelLoc, 1, GL_FALSE, glm::value_ptr( model ) );
+        
+        int viewLoc = glGetUniformLocation( ourShader.ID, "view" );
+        glUniformMatrix4fv( viewLoc, 1, GL_FALSE, glm::value_ptr( view ) );
+        
+        int projectionLoc = glGetUniformLocation( ourShader.ID, "projection" );
+        glUniformMatrix4fv( projectionLoc, 1, GL_FALSE, glm::value_ptr( projection ) );
+
+
+        //Code to fade the 2nd texture
+        //ourShader.setFloat( "fadeValue", g_MixValue );
 
         //Render 
-        ourShader.use();
+        
         glBindVertexArray( VAO );
-        glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+        //glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+        for ( unsigned int i = 0; i < 10; i++ )
+        {
+            glm::mat4 model = glm::mat4( 1.0f );
+            model = glm::translate( model, cubePositions[i] );
+            float angle = 20.0f * i;
+            if ( i % 3 == 0 )  // every 3rd iteration (including the first) we set the angle using GLFW's time function.
+                angle = glfwGetTime() * 25.0f;
+            model = glm::rotate( model, glm::radians( angle ), glm::vec3( 1.0f, 0.3f, 0.5f ) );
+            ourShader.setMat4( "model", model );
 
-        trans = glm::mat4( 1.0f );
-        trans = glm::translate( trans, glm::vec3( -0.5f, 0.5f, 0.0f ) );
-        float scaleAmount = sin( glfwGetTime() );
-        trans = glm::scale( trans, glm::vec3( scaleAmount, scaleAmount, scaleAmount ));
-        glUniformMatrix4fv( transformLoc, 1, GL_FALSE,&trans[0][0] );
+            glDrawArrays( GL_TRIANGLES, 0, 36 );
+        }
 
-        glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+        //trans = glm::mat4( 1.0f );
+        //trans = glm::translate( trans, glm::vec3( -0.5f, 0.5f, 0.0f ) );
+        //float scaleAmount = sin( glfwGetTime() );
+        //trans = glm::scale( trans, glm::vec3( scaleAmount, scaleAmount, scaleAmount ));
+        //glUniformMatrix4fv( transformLoc, 1, GL_FALSE,&trans[0][0] );
+
+        //glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
 
         //draw our first triangle
         //float timeValue = glfwGetTime();

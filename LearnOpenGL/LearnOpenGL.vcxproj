@@ -32,6 +32,9 @@
     <ClInclude Include="Headers\Shader.h" />
     <ClInclude Include="Headers\stb_image.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Text.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{52F09A99-D863-453E-BE9A-09FAAC24830F}</ProjectGuid>

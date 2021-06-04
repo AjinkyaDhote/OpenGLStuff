@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Shaders">
       <UniqueIdentifier>{4aba601d-904a-4a26-8ef8-ee0644865c55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Theory">
+      <UniqueIdentifier>{3dc57348-ee6d-4beb-a39a-d17c058bc66d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\glad.c">
@@ -49,5 +52,10 @@
     <ClInclude Include="Headers\stb_image.h">
       <Filter>Source Files\Headers</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Text.txt">
+      <Filter>Theory</Filter>
+    </Text>
   </ItemGroup>
 </Project>
